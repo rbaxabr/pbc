@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Benefit Clicker 🦺⚡🛡️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Anthropic Official Brand Colors */
+            --anthro-dark: #141413;
+            --anthro-light: #faf9f5;
+            --anthro-mid-gray: #b0aea5;
+            --anthro-light-gray: #e8e6dc;
+            --anthro-orange: #d97757;
+            --anthro-blue: #6a9bcc;
+            --anthro-green: #788c5d;
+            --anthro-rust: #c15f3c;
+            
+            /* Game-specific colors */
+            --compute-glow: linear-gradient(135deg, var(--anthro-orange), var(--anthro-blue));
+            --shadow-soft: 0 4px 16px rgba(20, 20, 19, 0.08);
+            --shadow-medium: 0 8px 32px rgba(20, 20, 19, 0.12);
+            --shadow-hard: 0 12px 48px rgba(20, 20, 19, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--anthro-light);
+            color: var(--anthro-dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated neural network background */
+        .neural-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            color: var(--anthro-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--anthro-mid-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Main Game Area */
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Stats Panel */
+        .stats-panel {
+            background: white;
+            border: 2px solid var(--anthro-dark);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--compute-glow);
+        }
+        
+        .stat-item {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--anthro-light-gray);
+            padding-bottom: 1rem;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .stat-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--anthro-mid-gray);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--anthro-orange);
+        }
+        
+        .stat-value.large {
+            font-size: 2.5rem;
+        }
+        
+        /* Click Button */
+        .click-area {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        #mainClickBtn {
+            background: var(--anthro-orange);
+            color: white;
+            border: 3px solid var(--anthro-dark);
+            padding: 2rem 3rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #mainClickBtn:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hard);
+            background: var(--anthro-rust);
+        }
+        
+        #mainClickBtn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        #mainClickBtn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+        
+        #mainClickBtn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Click value floater */
+        .click-floater {
+            position: fixed;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--anthro-orange);
+            pointer-events: none;
+            animation: floatUp 1.5s ease-out forwards;
+            z-index: 1000;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+        }
+        
+        /* Timeline */
+        .timeline-panel {
+            background: white;
+            border: 2px solid var(--anthro-dark);
+            padding: 2rem;
+            box-shadow: var(--shadow-medium);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .timeline-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--anthro-dark);
+            border-bottom: 2px solid var(--anthro-orange);
+            padding-bottom: 0.5rem;
+        }
+        
+        .milestone {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--anthro-light);
+            border-left: 4px solid var(--anthro-light-gray);
+            transition: all 0.3s ease;
+            opacity: 0.4;
+        }
+        
+        .milestone.unlocked {
+            opacity: 1;
+            border-left-color: var(--anthro-green);
+            animation: milestoneUnlock 0.5s ease;
+        }
+        
+        .milestone.trap {
+            border-left-color: var(--anthro-rust);
+        }
+        
+        .milestone.active {
+            background: var(--anthro-orange);
+            color: white;
+            border-left-color: var(--anthro-dark);
+        }
+        
+        @keyframes milestoneUnlock {
+            0% {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .milestone-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .milestone-date {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--anthro-mid-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .milestone.unlocked .milestone-date,
+        .milestone.active .milestone-date {
+            color: inherit;
+            opacity: 0.7;
+        }
+        
+        .milestone-description {
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .milestone-effect {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        
+        .milestone.active .milestone-effect {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Upgrades Shop */
+        .upgrades-section {
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--anthro-dark);
+        }
+        
+        .upgrades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .upgrade-card {
+            background: white;
+            border: 2px solid var(--anthro-light-gray);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upgrade-card:hover:not(.disabled) {
+            border-color: var(--anthro-orange);
+            box-shadow: var(--shadow-medium);
+            transform: translateY(-4px);
+        }
+        
+        .upgrade-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .upgrade-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upgrade-cost {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--anthro-orange);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upgrade-effect {
+            font-size: 0.875rem;
+            color: var(--anthro-mid-gray);
+            line-height: 1.5;
+        }
+        
+        .upgrade-owned {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            color: var(--anthro-green);
+        }
+        
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--anthro-dark);
+            color: var(--anthro-light);
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--anthro-orange);
+            box-shadow: var(--shadow-hard);
+            max-width: 400px;
+            z-index: 2000;
+            animation: slideInRight 0.5s ease, slideOutRight 0.5s ease 4.5s forwards;
+        }
+        
+        .toast.trap {
+            border-left-color: var(--anthro-rust);
+            background: var(--anthro-rust);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(500px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(500px);
+                opacity: 0;
+            }
+        }
+        
+        .toast-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .toast-message {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        /* Control Buttons */
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .control-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            padding: 0.75rem 1.5rem;
+            background: var(--anthro-light-gray);
+            border: 2px solid var(--anthro-mid-gray);
+            color: var(--anthro-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .control-btn:hover {
+            background: var(--anthro-mid-gray);
+            border-color: var(--anthro-dark);
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Progress bar */
+        .progress-bar {
+            height: 8px;
+            background: var(--anthro-light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--compute-glow);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="neural-bg" id="neuralBg"></canvas>
+    
+    <div class="container">
+        <header>
+            <h1>Public Benefit Clicker 🦺⚡🛡️</h1>
+            <p class="subtitle">Making AI Systems You Can Rely On</p>
+        </header>
+        
+        <div class="controls">
+            <button class="control-btn" onclick="game.save()">💾 Save Progress</button>
+            <button class="control-btn" onclick="game.reset()">🔄 Hard Reset</button>
+        </div>
+        
+        <div class="game-grid">
+            <div>
+                <!-- Stats Panel -->
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <div class="stat-label">Company Valuation</div>
+                        <div class="stat-value large" id="valuation">$550M</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="valuationProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Revenue Run-Rate</div>
+                        <div class="stat-value" id="revenue">$0/year</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Money per Second</div>
+                        <div class="stat-value" id="mps">$0/sec</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Click Value</div>
+                        <div class="stat-value" id="clickValue">$0.1M</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Models Launched</div>
+                        <div class="stat-value" id="modelsLaunched">0</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-label">Enterprise Customers</div>
+                        <div class="stat-value" id="customers">0</div>
+                    </div>
+                </div>
+                
+                <!-- Click Button -->
+                <div class="click-area" style="margin-top: 2rem;">
+                    <button id="mainClickBtn">
+                        <span id="btnText">Write Research Paper</span>
+                    </button>
+                </div>
+                
+                <!-- Upgrades -->
+                <div class="upgrades-section" style="margin-top: 2rem;">
+                    <h2 class="section-title">Upgrades</h2>
+                    <div class="upgrades-grid" id="upgradesGrid"></div>
+                </div>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="timeline-panel">
+                <h3 class="timeline-header">Journey to Frontier</h3>
+                <div id="timelineList"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game State
+        const game = {
+            money: 550, // Start at $550M (Series A valuation)
+            moneyPerSecond: 0,
+            clickValue: 0.1,
+            totalClicks: 0,
+            modelsLaunched: 0,
+            customers: 0,
+            currentMilestoneIndex: 0,
+            
+            upgrades: {
+                juniorResearcher: { owned: 0, cost: 10, baseCost: 10, effect: 0.01 },
+                seniorResearcher: { owned: 0, cost: 100, baseCost: 100, effect: 0.05 },
+                h100Cluster: { owned: 0, cost: 250, baseCost: 250, effect: 0.5 },
+                apiGateway: { owned: 0, cost: 50, baseCost: 50, effect: 10 },
+                salesTeam: { owned: 0, cost: 25, baseCost: 25, effect: 0.15 },
+                enterpriseConsole: { owned: 0, cost: 200, baseCost: 200, effect: 50 },
+            },
+            
+            milestones: [
+                {
+                    name: "Series A - The Beginning",
+                    date: "May 2021",
+                    requirement: 0,
+                    effect: "Starting point: $550M valuation",
+                    description: "Seven former OpenAI employees strike out on their own. Constitutional AI begins.",
+                    reward: { type: 'unlock', value: 'started' }
+                },
+                {
+                    name: "Series B - FTX Investment",
+                    date: "April 2022",
+                    requirement: 2000,
+                    effect: "Valuation → $2B, but...",
+                    description: "Sam Bankman-Fried leads $580M round. The bet looks brilliant... for now.",
+                    reward: { type: 'valuation', value: 2000 },
+                    trap: true,
+                    trapEffect: "FTX Controversy: -30% revenue growth for 30 seconds"
+                },
+                {
+                    name: "Claude 1.0 Launch",
+                    date: "March 2023",
+                    requirement: 4100,
+                    effect: "+$10M/sec revenue",
+                    description: "Named after Claude Shannon. Hello, helpful, harmless, honest AI.",
+                    reward: { type: 'mps', value: 10, models: 1 }
+                },
+                {
+                    name: "Series C - Spark Capital",
+                    date: "May 2023",
+                    requirement: 4100,
+                    effect: "Valuation → $4.1B",
+                    description: "Spark Capital leads $450M round. Claude enters the arena.",
+                    reward: { type: 'valuation', value: 4100 }
+                },
+                {
+                    name: "Claude 2 Launch",
+                    date: "July 2023",
+                    requirement: 4100,
+                    effect: "+$15M/sec revenue",
+                    description: "200K context window. Hundreds of pages at once.",
+                    reward: { type: 'mps', value: 15, models: 1 }
+                },
+                {
+                    name: "Amazon Investment #1",
+                    date: "September 2023",
+                    requirement: 18000,
+                    effect: "Valuation → $18B, efficiency +50%",
+                    description: "Amazon commits $4B total. Trainium chips incoming.",
+                    reward: { type: 'valuation', value: 18000, efficiency: 1.5 }
+                },
+                {
+                    name: "Claude 3 Family",
+                    date: "March 2024",
+                    requirement: 18000,
+                    effect: "+$100M/sec revenue",
+                    description: "Opus, Sonnet, Haiku. A model for every need.",
+                    reward: { type: 'mps', value: 100, models: 3, customers: 50000 }
+                },
+                {
+                    name: "Copyright Lawsuit Filed",
+                    date: "2024",
+                    requirement: 18000,
+                    effect: "Immediate impact",
+                    description: "Authors sue over LibGen usage. Legal battles begin.",
+                    reward: { type: 'money', value: -100 },
+                    trap: true,
+                    trapEffect: "-$100M legal reserves"
+                },
+                {
+                    name: "Claude 3.5 Sonnet",
+                    date: "June 2024",
+                    requirement: 61500,
+                    effect: "+$200M/sec revenue",
+                    description: "The mid-tier model that beats the flagship. Unexpected.",
+                    reward: { type: 'mps', value: 200, models: 1 }
+                },
+                {
+                    name: "Series E - Lightspeed",
+                    date: "March 2025",
+                    requirement: 61500,
+                    effect: "Valuation → $61.5B",
+                    description: "From zero to unicorn in 2 years. $1B revenue run-rate.",
+                    reward: { type: 'valuation', value: 61500, customers: 100000 }
+                },
+                {
+                    name: "Claude 4 Family",
+                    date: "May 2025",
+                    requirement: 61500,
+                    effect: "+$1B/sec revenue",
+                    description: "Level 3 safety classification. The frontier model arrives.",
+                    reward: { type: 'mps', value: 1000, models: 2 }
+                },
+                {
+                    name: "Copyright Settlement",
+                    date: "September 2025",
+                    requirement: 183000,
+                    effect: "-$1.5B one-time",
+                    description: "$3,000 per book. 500,000 books. Largest US copyright settlement in history.",
+                    reward: { type: 'money', value: -1500 },
+                    trap: true,
+                    trapEffect: "A very expensive lesson in data sourcing"
+                },
+                {
+                    name: "Series F - ICONIQ",
+                    date: "September 2025",
+                    requirement: 183000,
+                    effect: "Valuation → $183B",
+                    description: "ICONIQ, Fidelity, Lightspeed lead. Nearly $200B valuation.",
+                    reward: { type: 'valuation', value: 183000, customers: 300000 }
+                },
+                {
+                    name: "Victory: $350B Valuation",
+                    date: "November 2025",
+                    requirement: 350000,
+                    effect: "YOU WIN!",
+                    description: "From seven OpenAI refugees to a $350B company in 4.5 years. But the real work is just beginning.",
+                    reward: { type: 'win' }
+                }
+            ],
+            
+            init() {
+                this.loadGame();
+                this.renderUpgrades();
+                this.renderTimeline();
+                this.updateDisplay();
+                this.startGameLoop();
+                this.initNeuralBackground();
+                
+                // Click handler
+                document.getElementById('mainClickBtn').addEventListener('click', (e) => this.handleClick(e));
+            },
+            
+            handleClick(e) {
+                this.money += this.clickValue;
+                this.totalClicks++;
+                
+                // Create floater
+                const floater = document.createElement('div');
+                floater.className = 'click-floater';
+                floater.textContent = `+$${this.clickValue.toFixed(1)}M`;
+                floater.style.left = e.clientX + 'px';
+                floater.style.top = e.clientY + 'px';
+                document.body.appendChild(floater);
+                
+                setTimeout(() => floater.remove(), 1500);
+                
+                this.checkMilestones();
+                this.updateDisplay();
+            },
+            
+            buyUpgrade(upgradeKey) {
+                const upgrade = this.upgrades[upgradeKey];
+                if (this.money >= upgrade.cost) {
+                    this.money -= upgrade.cost;
+                    upgrade.owned++;
+                    upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.owned));
+                    
+                    // Add to MPS
+                    this.moneyPerSecond += upgrade.effect;
+                    
+                    this.showToast('Upgrade Purchased!', `You now have ${upgrade.owned} of this upgrade`);
+                    this.updateDisplay();
+                    this.renderUpgrades();
+                }
+            },
+            
+            checkMilestones() {
+                const currentMilestone = this.milestones[this.currentMilestoneIndex];
+                if (currentMilestone && this.money >= currentMilestone.requirement) {
+                    this.unlockMilestone(this.currentMilestoneIndex);
+                    this.currentMilestoneIndex++;
+                    this.renderTimeline();
+                }
+            },
+            
+            unlockMilestone(index) {
+                const milestone = this.milestones[index];
+                
+                // Apply rewards
+                if (milestone.reward) {
+                    const r = milestone.reward;
+                    if (r.type === 'mps') {
+                        this.moneyPerSecond += r.value;
+                        if (r.models) this.modelsLaunched += r.models;
+                        if (r.customers) this.customers += r.customers;
+                    } else if (r.type === 'valuation') {
+                        this.money = Math.max(this.money, r.value);
+                        if (r.efficiency) this.moneyPerSecond *= r.efficiency;
+                        if (r.customers) this.customers += r.customers;
+                    } else if (r.type === 'money') {
+                        this.money += r.value;
+                    } else if (r.type === 'win') {
+                        this.showToast('🎉 VICTORY! 🎉', 'You built Anthropic from 7 people to $350B in 4.5 years!', false);
+                    }
+                }
+                
+                // Show notification
+                this.showToast(
+                    milestone.name,
+                    milestone.description,
+                    milestone.trap
+                );
+                
+                // Handle trap effects
+                if (milestone.trap) {
+                    const originalMPS = this.moneyPerSecond;
+                    this.moneyPerSecond *= 0.7; // 30% reduction
+                    setTimeout(() => {
+                        this.moneyPerSecond = originalMPS;
+                    }, 30000); // 30 seconds
+                }
+            },
+            
+            startGameLoop() {
+                setInterval(() => {
+                    this.money += this.moneyPerSecond / 10; // Update 10x per second
+                    this.updateDisplay();
+                    this.checkMilestones();
+                }, 100);
+                
+                // Auto-save every 30 seconds
+                setInterval(() => this.save(), 30000);
+            },
+            
+            updateDisplay() {
+                // Update button text based on value
+                const btn = document.getElementById('btnText');
+                if (this.clickValue < 1) btn.textContent = 'Write Research Paper';
+                else if (this.clickValue < 10) btn.textContent = 'Ship Product Update';
+                else btn.textContent = 'Sign Enterprise Deal';
+                
+                document.getElementById('valuation').textContent = this.formatMoney(this.money);
+                document.getElementById('revenue').textContent = `$${this.formatNumber(this.moneyPerSecond * 365 * 24 * 3600)}M/year`;
+                document.getElementById('mps').textContent = `$${this.formatNumber(this.moneyPerSecond)}M/sec`;
+                document.getElementById('clickValue').textContent = `$${this.clickValue.toFixed(1)}M`;
+                document.getElementById('modelsLaunched').textContent = this.modelsLaunched;
+                document.getElementById('customers').textContent = this.formatNumber(this.customers);
+                
+                // Progress bar
+                const nextMilestone = this.milestones[this.currentMilestoneIndex];
+                if (nextMilestone) {
+                    const progress = Math.min(100, (this.money / nextMilestone.requirement) * 100);
+                    document.getElementById('valuationProgress').style.width = progress + '%';
+                }
+            },
+            
+            formatMoney(value) {
+                if (value >= 1000000) return `$${(value / 1000).toFixed(1)}B`;
+                if (value >= 1000) return `$${(value / 1).toFixed(0)}M`;
+                return `$${value.toFixed(1)}M`;
+            },
+            
+            formatNumber(value) {
+                if (value >= 1000000) return (value / 1000).toFixed(1) + 'B';
+                if (value >= 1000) return (value / 1).toFixed(0) + 'M';
+                if (value >= 1) return value.toFixed(0);
+                return value.toFixed(2);
+            },
+            
+            renderUpgrades() {
+                const grid = document.getElementById('upgradesGrid');
+                grid.innerHTML = '';
+                
+                const upgradeData = {
+                    juniorResearcher: { name: 'Junior Researcher', effect: '+$0.01M/sec' },
+                    seniorResearcher: { name: 'Senior Researcher', effect: '+$0.05M/sec' },
+                    h100Cluster: { name: 'H100 GPU Cluster', effect: '+$0.5M/sec' },
+                    apiGateway: { name: 'API Gateway', effect: '+$10M/sec' },
+                    salesTeam: { name: 'Sales Team', effect: '+$0.15M/sec' },
+                    enterpriseConsole: { name: 'Enterprise Console', effect: '+$50M/sec' },
+                };
+                
+                for (const [key, data] of Object.entries(upgradeData)) {
+                    const upgrade = this.upgrades[key];
+                    const card = document.createElement('div');
+                    card.className = 'upgrade-card' + (this.money < upgrade.cost ? ' disabled' : '');
+                    card.innerHTML = `
+                        <div class="upgrade-name">${data.name}</div>
+                        <div class="upgrade-cost">Cost: $${this.formatNumber(upgrade.cost)}M</div>
+                        <div class="upgrade-effect">${data.effect}</div>
+                        <div class="upgrade-owned">Owned: ${upgrade.owned}</div>
+                    `;
+                    card.onclick = () => this.buyUpgrade(key);
+                    grid.appendChild(card);
+                }
+            },
+            
+            renderTimeline() {
+                const list = document.getElementById('timelineList');
+                list.innerHTML = '';
+                
+                this.milestones.forEach((milestone, index) => {
+                    const div = document.createElement('div');
+                    const isUnlocked = index < this.currentMilestoneIndex;
+                    const isActive = index === this.currentMilestoneIndex;
+                    
+                    div.className = 'milestone' + 
+                        (isUnlocked ? ' unlocked' : '') + 
+                        (isActive ? ' active' : '') +
+                        (milestone.trap ? ' trap' : '');
+                    
+                    div.innerHTML = `
+                        <div class="milestone-title">${milestone.name}</div>
+                        <div class="milestone-date">${milestone.date}</div>
+                        <div class="milestone-description">${milestone.description}</div>
+                        <div class="milestone-effect">
+                            ${isActive ? `Required: ${this.formatMoney(milestone.requirement)}` : milestone.effect}
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            },
+            
+            showToast(title, message, isTrap = false) {
+                const toast = document.createElement('div');
+                toast.className = 'toast' + (isTrap ? ' trap' : '');
+                toast.innerHTML = `
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                `;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.remove(), 5000);
+            },
+            
+            save() {
+                const saveData = {
+                    money: this.money,
+                    moneyPerSecond: this.moneyPerSecond,
+                    clickValue: this.clickValue,
+                    totalClicks: this.totalClicks,
+                    modelsLaunched: this.modelsLaunched,
+                    customers: this.customers,
+                    currentMilestoneIndex: this.currentMilestoneIndex,
+                    upgrades: this.upgrades
+                };
+                localStorage.setItem('publicBenefitClicker', JSON.stringify(saveData));
+                this.showToast('💾 Progress Saved', 'Your journey is safe');
+            },
+            
+            loadGame() {
+                const saved = localStorage.getItem('publicBenefitClicker');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    Object.assign(this, data);
+                    this.showToast('📂 Progress Loaded', 'Welcome back!');
+                }
+            },
+            
+            reset() {
+                if (confirm('Are you sure you want to reset all progress?')) {
+                    localStorage.removeItem('publicBenefitClicker');
+                    location.reload();
+                }
+            },
+            
+            initNeuralBackground() {
+                const canvas = document.getElementById('neuralBg');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                
+                const nodes = [];
+                for (let i = 0; i < 50; i++) {
+                    nodes.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5
+                    });
+                }
+                
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Update and draw nodes
+                    nodes.forEach(node => {
+                        node.x += node.vx;
+                        node.y += node.vy;
+                        
+                        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+                        
+                        ctx.fillStyle = '#141413';
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    
+                    // Draw connections
+                    ctx.strokeStyle = '#141413';
+                    ctx.lineWidth = 0.5;
+                    for (let i = 0; i < nodes.length; i++) {
+                        for (let j = i + 1; j < nodes.length; j++) {
+                            const dx = nodes[i].x - nodes[j].x;
+                            const dy = nodes[i].y - nodes[j].y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (dist < 150) {
+                                ctx.beginPath();
+                                ctx.moveTo(nodes[i].x, nodes[i].y);
+                                ctx.lineTo(nodes[j].x, nodes[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            }
+        };
+        
+        // Start the game
+        window.onload = () => game.init();
+    </script>
+</body>
+</html>
